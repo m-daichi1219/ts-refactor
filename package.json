@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "npx ts-node index.ts"
+    "debug": "npx ts-node ./src/1/index.ts"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/m-daichi1219/ts-refactor#readme",
   "devDependencies": {
     "@eslint/js": "^9.14.0",
+    "@types/node": "^22.9.0",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.25.3",
