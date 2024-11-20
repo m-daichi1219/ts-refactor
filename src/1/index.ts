@@ -25,9 +25,9 @@ const playFor = (performance: Performance): Play => {
   return plays[performance.playID];
 };
 
-const amountFor = (performance: Performance, play: Play): number => {
+const amountFor = (performance: Performance): number => {
   let result = 0;
-  switch (play.type) {
+  switch (playFor(performance).type) {
     case 'tragedy':
       result = 40000;
       if (performance.audience > 30) {
@@ -42,7 +42,7 @@ const amountFor = (performance: Performance, play: Play): number => {
       result += 300 * performance.audience;
       break;
     default:
-      throw new Error(`unknown type: ${play.type}`);
+      throw new Error(`unknown type: ${playFor(performance).type}`);
   }
   return result;
 };
@@ -58,7 +58,7 @@ const statement = (invoice: Invoice, plays: Plays) => {
   }).format;
 
   for (let perf of invoice.performances) {
-    let thisAmount = amountFor(perf, playFor(perf));
+    let thisAmount = amountFor(perf);
 
     // ボリューム特定のポイントを加算
     volumeCredits += Math.max(perf.audience - 30, 0);
