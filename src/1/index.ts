@@ -58,16 +58,14 @@ const statement = (invoice: Invoice, plays: Plays) => {
   }).format;
 
   for (let perf of invoice.performances) {
-    let thisAmount = amountFor(perf);
-
     // ボリューム特定のポイントを加算
     volumeCredits += Math.max(perf.audience - 30, 0);
     // 喜劇のときは10人につき、さらにポイントを加算
     if ('comedy' === playFor(perf).type)
       volumeCredits += Math.floor(perf.audience / 5);
     // 注文の内訳を出力
-    result += `${playFor(perf).name}: ${format(thisAmount / 100)}(${perf.audience} seats)\n`;
-    totalAmount += thisAmount;
+    result += `${playFor(perf).name}: ${format(amountFor(perf) / 100)}(${perf.audience} seats)\n`;
+    totalAmount += amountFor(perf);
   }
 
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
