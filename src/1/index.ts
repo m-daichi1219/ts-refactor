@@ -21,6 +21,14 @@ interface Play {
   type: PlayType;
 }
 
+const enUsUSDFormat = (amount: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  }).format(amount);
+};
+
 const playFor = (performance: Performance): Play => {
   return plays[performance.playID];
 };
@@ -59,20 +67,15 @@ const statement = (invoice: Invoice, plays: Plays) => {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
-  const format = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format;
 
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
     volumeCredits += volumeCreditsFor(perf);
-    result += `${playFor(perf).name}: ${format(amountFor(perf) / 100)}(${perf.audience} seats)\n`;
+    result += `${playFor(perf).name}: ${enUsUSDFormat(amountFor(perf) / 100)}(${perf.audience} seats)\n`;
     totalAmount += amountFor(perf);
   }
 
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
+  result += `Amount owed is ${enUsUSDFormat(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
 
   return result;
