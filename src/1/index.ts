@@ -26,7 +26,7 @@ const usd = (amount: number): string => {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
-  }).format(amount);
+  }).format(amount / 100);
 };
 
 const playFor = (performance: Performance): Play => {
@@ -71,11 +71,11 @@ const statement = (invoice: Invoice, plays: Plays) => {
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
     volumeCredits += volumeCreditsFor(perf);
-    result += `${playFor(perf).name}: ${usd(amountFor(perf) / 100)}(${perf.audience} seats)\n`;
+    result += `${playFor(perf).name}: ${usd(amountFor(perf))}(${perf.audience} seats)\n`;
     totalAmount += amountFor(perf);
   }
 
-  result += `Amount owed is ${usd(totalAmount / 100)}\n`;
+  result += `Amount owed is ${usd(totalAmount)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
 
   return result;
