@@ -21,7 +21,7 @@ interface Play {
   type: PlayType;
 }
 
-const enUsUSDFormat = (amount: number): string => {
+const usd = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -71,11 +71,11 @@ const statement = (invoice: Invoice, plays: Plays) => {
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
     volumeCredits += volumeCreditsFor(perf);
-    result += `${playFor(perf).name}: ${enUsUSDFormat(amountFor(perf) / 100)}(${perf.audience} seats)\n`;
+    result += `${playFor(perf).name}: ${usd(amountFor(perf) / 100)}(${perf.audience} seats)\n`;
     totalAmount += amountFor(perf);
   }
 
-  result += `Amount owed is ${enUsUSDFormat(totalAmount / 100)}\n`;
+  result += `Amount owed is ${usd(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
 
   return result;
