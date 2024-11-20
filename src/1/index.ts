@@ -1,6 +1,49 @@
 import * as fs from 'fs';
 
-const statement = (invoice: any, plays: any) => {
+interface Invoice {
+  customer: string;
+  performances: Performance[];
+}
+
+interface Performance {
+  playID: string;
+  audience: number;
+}
+
+interface Plays {
+  [key: string]: Play;
+}
+
+type PlayType = 'tragedy' | 'comedy';
+
+interface Play {
+  name: string;
+  type: PlayType;
+}
+
+const amountFor = (perf: Performance, play: Play) => {
+  let thisAmount = 0;
+  switch (play.type) {
+    case 'tragedy':
+      thisAmount = 40000;
+      if (perf.audience > 30) {
+        thisAmount += 1000 * (perf.audience - 30);
+      }
+      break;
+    case 'comedy':
+      thisAmount = 30000;
+      if (perf.audience > 20) {
+        thisAmount += 10000 + 500 * (perf.audience - 20);
+      }
+      thisAmount += 300 * perf.audience;
+      break;
+    default:
+      throw new Error(`unknown type: ${play.type}`);
+  }
+  return thisAmount;
+};
+
+const statement = (invoice: Invoice, plays: Plays) => {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -12,25 +55,7 @@ const statement = (invoice: any, plays: any) => {
 
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
-    let thisAmount = 0;
-
-    switch (play.type) {
-      case 'tragedy':
-        thisAmount = 40000;
-        if (perf.audience > 30) {
-          thisAmount += 1000 * (perf.audience - 30);
-        }
-        break;
-      case 'comedy':
-        thisAmount = 30000;
-        if (perf.audience > 20) {
-          thisAmount += 10000 + 500 * (perf.audience - 20);
-        }
-        thisAmount += 300 * perf.audience;
-        break;
-      default:
-        throw new Error(`unknown type: ${play.type}`);
-    }
+    let thisAmount = amountFor(perf, play);
 
     // ボリューム特定のポイントを加算
     volumeCredits += Math.max(perf.audience - 30, 0);
