@@ -47,6 +47,14 @@ const amountFor = (performance: Performance): number => {
   return result;
 };
 
+const volumeCreditsFor = (performance: Performance): number => {
+  let volumeCredits = 0;
+  volumeCredits += Math.max(performance.audience - 30, 0);
+  if ('comedy' === playFor(performance).type)
+    volumeCredits += Math.floor(performance.audience / 5);
+  return volumeCredits;
+};
+
 const statement = (invoice: Invoice, plays: Plays) => {
   let totalAmount = 0;
   let volumeCredits = 0;
@@ -59,11 +67,7 @@ const statement = (invoice: Invoice, plays: Plays) => {
 
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // 喜劇のときは10人につき、さらにポイントを加算
-    if ('comedy' === playFor(perf).type)
-      volumeCredits += Math.floor(perf.audience / 5);
-    // 注文の内訳を出力
+    volumeCredits += volumeCreditsFor(perf);
     result += `${playFor(perf).name}: ${format(amountFor(perf) / 100)}(${perf.audience} seats)\n`;
     totalAmount += amountFor(perf);
   }
