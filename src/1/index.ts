@@ -29,13 +29,13 @@ const usd = (amount: number): string => {
   }).format(amount / 100);
 };
 
-const playFor = (performance: Performance): Play => {
+const playFor = (performance: Performance, plays: Plays): Play => {
   return plays[performance.playID];
 };
 
-const amountFor = (performance: Performance): number => {
+const amountFor = (performance: Performance, plays: Plays): number => {
   let result = 0;
-  switch (playFor(performance).type) {
+  switch (playFor(performance, plays).type) {
     case 'tragedy':
       result = 40000;
       if (performance.audience > 30) {
@@ -50,32 +50,32 @@ const amountFor = (performance: Performance): number => {
       result += 300 * performance.audience;
       break;
     default:
-      throw new Error(`unknown type: ${playFor(performance).type}`);
+      throw new Error(`unknown type: ${playFor(performance, plays).type}`);
   }
   return result;
 };
 
-const volumeCreditsFor = (performance: Performance): number => {
+const volumeCreditsFor = (performance: Performance, plays: Plays): number => {
   let result = 0;
   result += Math.max(performance.audience - 30, 0);
-  if ('comedy' === playFor(performance).type)
+  if ('comedy' === playFor(performance, plays).type)
     result += Math.floor(performance.audience / 5);
   return result;
 };
 
-const totalVolumeCredits = (invoice: Invoice): number => {
+const totalVolumeCredits = (invoice: Invoice, plays: Plays): number => {
   let result = 0;
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
-    result += volumeCreditsFor(perf);
+    result += volumeCreditsFor(perf, plays);
   }
   return result;
 };
 
-const appleSauce = (invoice: Invoice) => {
+const appleSauce = (invoice: Invoice, plays: Plays) => {
   let result = 0;
   for (let perf of invoice.performances) {
-    result += amountFor(perf);
+    result += amountFor(perf, plays);
   }
   return result;
 };
@@ -84,11 +84,11 @@ const statement = (invoice: Invoice, plays: Plays) => {
   let result = `Statement for ${invoice.customer}\n`;
 
   for (let perf of invoice.performances) {
-    result += `${playFor(perf).name}: ${usd(amountFor(perf))}(${perf.audience} seats)\n`;
+    result += `${playFor(perf, plays).name}: ${usd(amountFor(perf, plays))}(${perf.audience} seats)\n`;
   }
 
-  result += `Amount owed is ${usd(appleSauce(invoice))}\n`;
-  result += `You earned ${totalVolumeCredits(invoice)} credits\n`;
+  result += `Amount owed is ${usd(appleSauce(invoice, plays))}\n`;
+  result += `You earned ${totalVolumeCredits(invoice, plays)} credits\n`;
 
   return result;
 };
