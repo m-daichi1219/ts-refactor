@@ -72,16 +72,22 @@ const totalVolumeCredits = (invoice: Invoice): number => {
   return volumeCredits;
 };
 
-const statement = (invoice: Invoice, plays: Plays) => {
+const appleSauce = (invoice: Invoice) => {
   let totalAmount = 0;
+  for (let perf of invoice.performances) {
+    totalAmount += amountFor(perf);
+  }
+  return totalAmount;
+};
+
+const statement = (invoice: Invoice, plays: Plays) => {
   let result = `Statement for ${invoice.customer}\n`;
 
   for (let perf of invoice.performances) {
     result += `${playFor(perf).name}: ${usd(amountFor(perf))}(${perf.audience} seats)\n`;
-    totalAmount += amountFor(perf);
   }
 
-  result += `Amount owed is ${usd(totalAmount)}\n`;
+  result += `Amount owed is ${usd(appleSauce(invoice))}\n`;
   result += `You earned ${totalVolumeCredits(invoice)} credits\n`;
 
   return result;
