@@ -64,20 +64,20 @@ const volumeCreditsFor = (performance: Performance): number => {
 };
 
 const totalVolumeCredits = (invoice: Invoice): number => {
-  let volumeCredits = 0;
+  let result = 0;
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
-    volumeCredits += volumeCreditsFor(perf);
+    result += volumeCreditsFor(perf);
   }
-  return volumeCredits;
+  return result;
 };
 
 const appleSauce = (invoice: Invoice) => {
-  let totalAmount = 0;
+  let result = 0;
   for (let perf of invoice.performances) {
-    totalAmount += amountFor(perf);
+    result += amountFor(perf);
   }
-  return totalAmount;
+  return result;
 };
 
 const statement = (invoice: Invoice, plays: Plays) => {
