@@ -80,7 +80,7 @@ const appleSauce = (invoice: Invoice, plays: Plays) => {
   return result;
 };
 
-const statement = (invoice: Invoice, plays: Plays) => {
+const renderPlainText = (invoice: Invoice, plays: Plays) => {
   let result = `Statement for ${invoice.customer}\n`;
 
   for (let perf of invoice.performances) {
@@ -91,6 +91,9 @@ const statement = (invoice: Invoice, plays: Plays) => {
   result += `You earned ${totalVolumeCredits(invoice, plays)} credits\n`;
 
   return result;
+};
+const statement = (invoice: Invoice, plays: Plays) => {
+  return renderPlainText(invoice, plays);
 };
 
 // JSONファイルの読み込み
