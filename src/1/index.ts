@@ -83,18 +83,19 @@ const appleSauce = (invoice: Invoice, plays: Plays) => {
 const renderPlainText = (data: any, invoice: Invoice, plays: Plays) => {
   let result = `Statement for ${data.customer}\n`;
 
-  for (let perf of invoice.performances) {
+  for (let perf of data.performances) {
     result += `${playFor(perf, plays).name}: ${usd(amountFor(perf, plays))}(${perf.audience} seats)\n`;
   }
 
-  result += `Amount owed is ${usd(appleSauce(invoice, plays))}\n`;
-  result += `You earned ${totalVolumeCredits(invoice, plays)} credits\n`;
+  result += `Amount owed is ${usd(appleSauce(data, plays))}\n`;
+  result += `You earned ${totalVolumeCredits(data, plays)} credits\n`;
 
   return result;
 };
 const statement = (invoice: Invoice, plays: Plays) => {
   const statementData = {
     customer: invoice.customer,
+    performances: invoice.performances,
   };
   return renderPlainText(statementData, invoice, plays);
 };
