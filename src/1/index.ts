@@ -93,15 +93,19 @@ const renderPlainText = (data: any, plays: Plays) => {
   return result;
 };
 
-const enrichPerformance = (aPerformance: Performance) => {
-  const result = Object.assign({}, aPerformance);
+const enrichPerformance = (aPerformance: Performance, plays: Plays) => {
+  const result: any = Object.assign({}, aPerformance);
+  result.play = playFor(aPerformance, plays);
   return result;
 };
 
+// todo: playForを利用している箇所を削除する
 const statement = (invoice: Invoice, plays: Plays) => {
   const statementData = {
     customer: invoice.customer,
-    performances: invoice.performances.map(enrichPerformance),
+    performances: invoice.performances.map((perf) =>
+      enrichPerformance(perf, plays),
+    ),
   };
   return renderPlainText(statementData, plays);
 };
