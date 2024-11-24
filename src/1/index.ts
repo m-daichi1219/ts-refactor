@@ -92,10 +92,16 @@ const renderPlainText = (data: any, plays: Plays) => {
 
   return result;
 };
+
+const enrichPerformance = (aPerformance: Performance) => {
+  const result = Object.assign({}, aPerformance);
+  return result;
+};
+
 const statement = (invoice: Invoice, plays: Plays) => {
   const statementData = {
     customer: invoice.customer,
-    performances: invoice.performances,
+    performances: invoice.performances.map(enrichPerformance),
   };
   return renderPlainText(statementData, plays);
 };
