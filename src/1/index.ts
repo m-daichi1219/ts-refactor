@@ -80,8 +80,8 @@ const appleSauce = (invoice: Invoice, plays: Plays) => {
   return result;
 };
 
-const renderPlainText = (invoice: Invoice, plays: Plays) => {
-  let result = `Statement for ${invoice.customer}\n`;
+const renderPlainText = (data: any, invoice: Invoice, plays: Plays) => {
+  let result = `Statement for ${data.customer}\n`;
 
   for (let perf of invoice.performances) {
     result += `${playFor(perf, plays).name}: ${usd(amountFor(perf, plays))}(${perf.audience} seats)\n`;
@@ -93,7 +93,10 @@ const renderPlainText = (invoice: Invoice, plays: Plays) => {
   return result;
 };
 const statement = (invoice: Invoice, plays: Plays) => {
-  return renderPlainText(invoice, plays);
+  const statementData = {
+    customer: invoice.customer,
+  };
+  return renderPlainText(statementData, invoice, plays);
 };
 
 // JSONファイルの読み込み
