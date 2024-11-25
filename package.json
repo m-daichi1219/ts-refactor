@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "debug": "npx ts-node ./src/1/index.ts"
+    "debug": "npx ts-node --transpile-only ./src/1/index.ts"
   },
   "repository": {
     "type": "git",

@@ -21,6 +21,15 @@ interface Play {
   type: PlayType;
 }
 
+// todo: 一時的に型解決のために追加
+interface PerformanceWithPlay extends Performance {
+  play: Play;
+}
+interface InvoiceAndPlay {
+  customer: string;
+  performances: PerformanceWithPlay[];
+}
+
 const usd = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -33,9 +42,9 @@ const playFor = (performance: Performance, plays: Plays): Play => {
   return plays[performance.playID];
 };
 
-const amountFor = (performance: Performance, plays: Plays): number => {
+const amountFor = (performance: PerformanceWithPlay, plays: Plays): number => {
   let result = 0;
-  switch (playFor(performance, plays).type) {
+  switch (performance.play.type) {
     case 'tragedy':
       result = 40000;
       if (performance.audience > 30) {
@@ -50,29 +59,29 @@ const amountFor = (performance: Performance, plays: Plays): number => {
       result += 300 * performance.audience;
       break;
     default:
-      throw new Error(`unknown type: ${playFor(performance, plays).type}`);
+      throw new Error(`unknown type: ${performance.play.type}`);
   }
   return result;
 };
 
-const volumeCreditsFor = (performance: Performance, plays: Plays): number => {
+const volumeCreditsFor = (performance: PerformanceWithPlay): number => {
   let result = 0;
   result += Math.max(performance.audience - 30, 0);
-  if ('comedy' === playFor(performance, plays).type)
+  if ('comedy' === performance.play.type)
     result += Math.floor(performance.audience / 5);
   return result;
 };
 
-const totalVolumeCredits = (invoice: Invoice, plays: Plays): number => {
+const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
   let result = 0;
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
-    result += volumeCreditsFor(perf, plays);
+    result += volumeCreditsFor(perf);
   }
   return result;
 };
 
-const appleSauce = (invoice: Invoice, plays: Plays) => {
+const appleSauce = (invoice: InvoiceAndPlay, plays: Plays) => {
   let result = 0;
   for (let perf of invoice.performances) {
     result += amountFor(perf, plays);
@@ -80,28 +89,30 @@ const appleSauce = (invoice: Invoice, plays: Plays) => {
   return result;
 };
 
-const renderPlainText = (data: any, plays: Plays) => {
+const renderPlainText = (data: InvoiceAndPlay, plays: Plays) => {
   let result = `Statement for ${data.customer}\n`;
 
   for (let perf of data.performances) {
-    result += `${playFor(perf, plays).name}: ${usd(amountFor(perf, plays))}(${perf.audience} seats)\n`;
+    result += `${perf.play.name}: ${usd(amountFor(perf, plays))}(${perf.audience} seats)\n`;
   }
 
   result += `Amount owed is ${usd(appleSauce(data, plays))}\n`;
-  result += `You earned ${totalVolumeCredits(data, plays)} credits\n`;
+  result += `You earned ${totalVolumeCredits(data)} credits\n`;
 
   return result;
 };
 
-const enrichPerformance = (aPerformance: Performance, plays: Plays) => {
+const enrichPerformance = (
+  aPerformance: Performance,
+  plays: Plays,
+): PerformanceWithPlay => {
   const result: any = Object.assign({}, aPerformance);
   result.play = playFor(aPerformance, plays);
   return result;
 };
 
-// todo: playForを利用している箇所を削除する
 const statement = (invoice: Invoice, plays: Plays) => {
-  const statementData = {
+  const statementData: InvoiceAndPlay = {
     customer: invoice.customer,
     performances: invoice.performances.map((perf) =>
       enrichPerformance(perf, plays),
