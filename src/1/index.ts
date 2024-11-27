@@ -24,6 +24,7 @@ interface Play {
 // todo: 一時的に型解決のために追加
 interface PerformanceWithPlay extends Performance {
   play: Play;
+  amount: number;
 }
 interface InvoiceAndPlay {
   customer: string;
@@ -84,7 +85,7 @@ const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
 const appleSauce = (invoice: InvoiceAndPlay, plays: Plays) => {
   let result = 0;
   for (let perf of invoice.performances) {
-    result += amountFor(perf, plays);
+    result += perf.amount;
   }
   return result;
 };
@@ -93,7 +94,7 @@ const renderPlainText = (data: InvoiceAndPlay, plays: Plays) => {
   let result = `Statement for ${data.customer}\n`;
 
   for (let perf of data.performances) {
-    result += `${perf.play.name}: ${usd(amountFor(perf, plays))}(${perf.audience} seats)\n`;
+    result += `${perf.play.name}: ${usd(perf.amount)}(${perf.audience} seats)\n`;
   }
 
   result += `Amount owed is ${usd(appleSauce(data, plays))}\n`;
@@ -108,6 +109,7 @@ const enrichPerformance = (
 ): PerformanceWithPlay => {
   const result: any = Object.assign({}, aPerformance);
   result.play = playFor(aPerformance, plays);
+  result.amount = amountFor(result, plays);
   return result;
 };
 
