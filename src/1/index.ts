@@ -25,6 +25,7 @@ interface Play {
 interface PerformanceWithPlay extends Performance {
   play: Play;
   amount: number;
+  valueCredits: number;
 }
 interface InvoiceAndPlay {
   customer: string;
@@ -77,7 +78,7 @@ const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
   let result = 0;
   for (let perf of invoice.performances) {
     // ボリューム特定のポイントを加算
-    result += volumeCreditsFor(perf);
+    result += perf.valueCredits;
   }
   return result;
 };
@@ -110,6 +111,7 @@ const enrichPerformance = (
   const result: any = Object.assign({}, aPerformance);
   result.play = playFor(aPerformance, plays);
   result.amount = amountFor(result, plays);
+  result.volumeCredits = volumeCreditsFor(result);
   return result;
 };
 
