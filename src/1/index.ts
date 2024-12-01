@@ -30,6 +30,7 @@ interface PerformanceWithPlay extends Performance {
 interface InvoiceAndPlay {
   customer: string;
   performances: PerformanceWithPlay[];
+  totalVolumeCredits: number;
 }
 
 const usd = (amount: number): string => {
@@ -99,7 +100,7 @@ const renderPlainText = (data: InvoiceAndPlay, plays: Plays) => {
   }
 
   result += `Amount owed is ${usd(appleSauce(data, plays))}\n`;
-  result += `You earned ${totalVolumeCredits(data)} credits\n`;
+  result += `You earned ${data.totalVolumeCredits} credits\n`;
 
   return result;
 };
@@ -121,7 +122,9 @@ const statement = (invoice: Invoice, plays: Plays) => {
     performances: invoice.performances.map((perf) =>
       enrichPerformance(perf, plays),
     ),
+    totalVolumeCredits: 0,
   };
+  statementData.totalVolumeCredits = totalVolumeCredits(statementData);
   return renderPlainText(statementData, plays);
 };
 
