@@ -85,7 +85,7 @@ const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
   return result;
 };
 
-const appleSauce = (invoice: InvoiceAndPlay) => {
+const totalAmount = (invoice: InvoiceAndPlay) => {
   let result = 0;
   for (let perf of invoice.performances) {
     result += perf.amount;
@@ -127,7 +127,7 @@ const statement = (invoice: Invoice, plays: Plays) => {
     totalAmount: 0,
   };
   statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-  statementData.totalAmount = appleSauce(statementData);
+  statementData.totalAmount = totalAmount(statementData);
   return renderPlainText(statementData, plays);
 };
 
