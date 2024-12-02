@@ -77,12 +77,7 @@ const volumeCreditsFor = (performance: PerformanceWithPlay): number => {
 };
 
 const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
-  let result = 0;
-  for (let perf of invoice.performances) {
-    // ボリューム特定のポイントを加算
-    result += perf.volumeCredits;
-  }
-  return result;
+  return invoice.performances.reduce((total, p) => total + p.volumeCredits, 0);
 };
 
 const totalAmount = (invoice: InvoiceAndPlay) => {
