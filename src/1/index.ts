@@ -31,6 +31,7 @@ interface InvoiceAndPlay {
   customer: string;
   performances: PerformanceWithPlay[];
   totalVolumeCredits: number;
+  totalAmount: number;
 }
 
 const usd = (amount: number): string => {
@@ -84,7 +85,7 @@ const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
   return result;
 };
 
-const appleSauce = (invoice: InvoiceAndPlay, plays: Plays) => {
+const appleSauce = (invoice: InvoiceAndPlay) => {
   let result = 0;
   for (let perf of invoice.performances) {
     result += perf.amount;
@@ -99,7 +100,7 @@ const renderPlainText = (data: InvoiceAndPlay, plays: Plays) => {
     result += `${perf.play.name}: ${usd(perf.amount)}(${perf.audience} seats)\n`;
   }
 
-  result += `Amount owed is ${usd(appleSauce(data, plays))}\n`;
+  result += `Amount owed is ${usd(data.totalAmount)}\n`;
   result += `You earned ${data.totalVolumeCredits} credits\n`;
 
   return result;
@@ -123,8 +124,10 @@ const statement = (invoice: Invoice, plays: Plays) => {
       enrichPerformance(perf, plays),
     ),
     totalVolumeCredits: 0,
+    totalAmount: 0,
   };
   statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+  statementData.totalAmount = appleSauce(statementData);
   return renderPlainText(statementData, plays);
 };
 
