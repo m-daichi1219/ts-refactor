@@ -86,11 +86,7 @@ const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
 };
 
 const totalAmount = (invoice: InvoiceAndPlay) => {
-  let result = 0;
-  for (let perf of invoice.performances) {
-    result += perf.amount;
-  }
-  return result;
+  return invoice.performances.reduce((total, p) => total + p.amount, 0);
 };
 
 const renderPlainText = (data: InvoiceAndPlay, plays: Plays) => {
