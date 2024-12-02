@@ -46,7 +46,7 @@ const playFor = (performance: Performance, plays: Plays): Play => {
   return plays[performance.playID];
 };
 
-const amountFor = (performance: PerformanceWithPlay, plays: Plays): number => {
+const amountFor = (performance: PerformanceWithPlay): number => {
   let result = 0;
   switch (performance.play.type) {
     case 'tragedy':
@@ -84,7 +84,7 @@ const totalAmount = (invoice: InvoiceAndPlay) => {
   return invoice.performances.reduce((total, p) => total + p.amount, 0);
 };
 
-const renderPlainText = (data: InvoiceAndPlay, plays: Plays) => {
+const renderPlainText = (data: InvoiceAndPlay) => {
   let result = `Statement for ${data.customer}\n`;
 
   for (let perf of data.performances) {
@@ -103,12 +103,15 @@ const enrichPerformance = (
 ): PerformanceWithPlay => {
   const result: any = Object.assign({}, aPerformance);
   result.play = playFor(aPerformance, plays);
-  result.amount = amountFor(result, plays);
+  result.amount = amountFor(result);
   result.volumeCredits = volumeCreditsFor(result);
   return result;
 };
 
-const statement = (invoice: Invoice, plays: Plays) => {
+const createStatementData = (
+  invoice: Invoice,
+  plays: Plays,
+): InvoiceAndPlay => {
   const statementData: InvoiceAndPlay = {
     customer: invoice.customer,
     performances: invoice.performances.map((perf) =>
@@ -119,7 +122,12 @@ const statement = (invoice: Invoice, plays: Plays) => {
   };
   statementData.totalVolumeCredits = totalVolumeCredits(statementData);
   statementData.totalAmount = totalAmount(statementData);
-  return renderPlainText(statementData, plays);
+
+  return statementData;
+};
+
+const statement = (invoice: Invoice, plays: Plays) => {
+  return renderPlainText(createStatementData(invoice, plays));
 };
 
 // JSONファイルの読み込み
