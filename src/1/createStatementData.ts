@@ -46,6 +46,24 @@ class PerformanceCalculator {
   }
 }
 
+class TragedyCalculator extends PerformanceCalculator {}
+
+class ComedyCalculator extends PerformanceCalculator {}
+
+const createPerformanceCalculator = (
+  aPerformance: Performance,
+  aPlay: Play,
+) => {
+  switch (aPlay.type) {
+    case 'tragedy':
+      return new TragedyCalculator(aPerformance, aPlay);
+    case 'comedy':
+      return new ComedyCalculator(aPerformance, aPlay);
+    default:
+      throw new Error(`未知の演劇の種類: ${aPlay.type}`);
+  }
+};
+
 const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
   return invoice.performances.reduce((total, p) => total + p.volumeCredits, 0);
 };
@@ -62,7 +80,7 @@ const enrichPerformance = (
   aPerformance: Performance,
   plays: Plays,
 ): PerformanceWithPlay => {
-  const calculator = new PerformanceCalculator(
+  const calculator = createPerformanceCalculator(
     aPerformance,
     playFor(aPerformance, plays),
   );
