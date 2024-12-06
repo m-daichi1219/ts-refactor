@@ -7,6 +7,13 @@ import {
   Performance,
 } from './types';
 
+class PerformanceCalculator {
+  performance: Performance;
+  constructor(aPerformance: Performance) {
+    this.performance = aPerformance;
+  }
+}
+
 const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
   return invoice.performances.reduce((total, p) => total + p.volumeCredits, 0);
 };
@@ -53,6 +60,7 @@ const enrichPerformance = (
   aPerformance: Performance,
   plays: Plays,
 ): PerformanceWithPlay => {
+  const calculator = new PerformanceCalculator(aPerformance);
   const result: any = Object.assign({}, aPerformance);
   result.play = playFor(aPerformance, plays);
   result.amount = amountFor(result);
