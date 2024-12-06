@@ -9,8 +9,32 @@ import {
 
 class PerformanceCalculator {
   performance: Performance;
-  constructor(aPerformance: Performance) {
+  play: Play;
+  constructor(aPerformance: Performance, aPlay: Play) {
     this.performance = aPerformance;
+    this.play = aPlay;
+  }
+
+  get amount(): number {
+    let result = 0;
+    switch (this.play.type) {
+      case 'tragedy':
+        result = 40000;
+        if (this.performance.audience > 30) {
+          result += 1000 * (this.performance.audience - 30);
+        }
+        break;
+      case 'comedy':
+        result = 30000;
+        if (this.performance.audience > 20) {
+          result += 10000 + 500 * (this.performance.audience - 20);
+        }
+        result += 300 * this.performance.audience;
+        break;
+      default:
+        throw new Error(`unknown type: ${this.play.type}`);
+    }
+    return result;
   }
 }
 
@@ -26,26 +50,9 @@ const playFor = (performance: Performance, plays: Plays): Play => {
   return plays[performance.playID];
 };
 
-const amountFor = (performance: PerformanceWithPlay): number => {
-  let result = 0;
-  switch (performance.play.type) {
-    case 'tragedy':
-      result = 40000;
-      if (performance.audience > 30) {
-        result += 1000 * (performance.audience - 30);
-      }
-      break;
-    case 'comedy':
-      result = 30000;
-      if (performance.audience > 20) {
-        result += 10000 + 500 * (performance.audience - 20);
-      }
-      result += 300 * performance.audience;
-      break;
-    default:
-      throw new Error(`unknown type: ${performance.play.type}`);
-  }
-  return result;
+const amountFor = (performance: PerformanceWithPlay, plays: Plays): number => {
+  return new PerformanceCalculator(performance, playFor(performance, plays))
+    .amount;
 };
 
 const volumeCreditsFor = (performance: PerformanceWithPlay): number => {
@@ -60,10 +67,13 @@ const enrichPerformance = (
   aPerformance: Performance,
   plays: Plays,
 ): PerformanceWithPlay => {
-  const calculator = new PerformanceCalculator(aPerformance);
+  const calculator = new PerformanceCalculator(
+    aPerformance,
+    playFor(aPerformance, plays),
+  );
   const result: any = Object.assign({}, aPerformance);
-  result.play = playFor(aPerformance, plays);
-  result.amount = amountFor(result);
+  result.play = calculator.play;
+  result.amount = amountFor(result, plays);
   result.volumeCredits = volumeCreditsFor(result);
   return result;
 };
