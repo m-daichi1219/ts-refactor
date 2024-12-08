@@ -1,8 +1,8 @@
 import {
   Invoice,
   Plays,
-  InvoiceAndPlay,
-  PerformanceWithPlay,
+  StatementData,
+  EnrichedPerformance,
   Play,
   Performance,
 } from './types';
@@ -66,11 +66,11 @@ const createPerformanceCalculator = (
   }
 };
 
-const totalVolumeCredits = (invoice: InvoiceAndPlay): number => {
+const totalVolumeCredits = (invoice: StatementData): number => {
   return invoice.performances.reduce((total, p) => total + p.volumeCredits, 0);
 };
 
-const totalAmount = (invoice: InvoiceAndPlay) => {
+const totalAmount = (invoice: StatementData) => {
   return invoice.performances.reduce((total, p) => total + p.amount, 0);
 };
 
@@ -81,7 +81,7 @@ const playFor = (performance: Performance, plays: Plays): Play => {
 const enrichPerformance = (
   aPerformance: Performance,
   plays: Plays,
-): PerformanceWithPlay => {
+): EnrichedPerformance => {
   const calculator = createPerformanceCalculator(
     aPerformance,
     playFor(aPerformance, plays),
@@ -96,8 +96,8 @@ const enrichPerformance = (
 export const createStatementData = (
   invoice: Invoice,
   plays: Plays,
-): InvoiceAndPlay => {
-  const statementData: InvoiceAndPlay = {
+): StatementData => {
+  const statementData: StatementData = {
     customer: invoice.customer,
     performances: invoice.performances.map((perf) =>
       enrichPerformance(perf, plays),

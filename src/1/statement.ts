@@ -1,5 +1,5 @@
 import { createStatementData } from './createStatementData';
-import { Invoice, InvoiceAndPlay, Plays } from './types';
+import { Invoice, StatementData, Plays } from './types';
 
 const usd = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
@@ -9,7 +9,7 @@ const usd = (amount: number): string => {
   }).format(amount / 100);
 };
 
-const renderPlainText = (data: InvoiceAndPlay) => {
+const renderPlainText = (data: StatementData) => {
   let result = `Statement for ${data.customer}\n`;
 
   for (let perf of data.performances) {
@@ -26,7 +26,7 @@ const statement = (invoice: Invoice, plays: Plays) => {
   return renderPlainText(createStatementData(invoice, plays));
 };
 
-const renderHtml = (data: InvoiceAndPlay) => {
+const renderHtml = (data: StatementData) => {
   let result = `<h1>Statement for ${data.customer}</h1>\n`;
   result += '<table>\n';
   result += '<tr><th>play</th><th>seats</th><th>cost</th></tr>';

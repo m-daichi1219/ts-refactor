@@ -19,15 +19,14 @@ export interface Play {
   type: PlayType;
 }
 
-// todo: 一時的に型解決のために追加
-export interface PerformanceWithPlay extends Performance {
+export interface EnrichedPerformance extends Performance {
   play: Play;
   amount: number;
   volumeCredits: number;
 }
-export interface InvoiceAndPlay {
+export interface StatementData {
   customer: string;
-  performances: PerformanceWithPlay[];
+  performances: EnrichedPerformance[];
   totalVolumeCredits: number;
   totalAmount: number;
 }
