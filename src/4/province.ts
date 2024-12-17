@@ -9,7 +9,7 @@ interface ProvinceJSON {
   price: number;
 }
 
-const sampleProvinceData = (): ProvinceJSON => {
+export const sampleProvinceData = (): ProvinceJSON => {
   return {
     name: 'Asia',
     producers: [
@@ -53,13 +53,13 @@ class Producer {
 
   set production(amountStr: string) {
     const amount = parseInt(amountStr);
-    const newProduction = amount;
+    const newProduction = Number.isNaN(amount) ? 0 : amount;
     this._province.totalProduction += newProduction - this._production;
     this._production = newProduction;
   }
 }
 
-class Province {
+export class Province {
   private _name: string;
   private _producers: Producer[];
   private _totalProduction: number;
