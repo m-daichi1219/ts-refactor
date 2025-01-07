@@ -1,5 +1,9 @@
 import { expect, it, describe, beforeEach } from 'vitest';
-import { Province, sampleProvinceData } from '../../src/4/province';
+import {
+  Province,
+  ProvinceJSON,
+  sampleProvinceData,
+} from '../../src/4/province';
 
 describe('province', () => {
   let asia: Province;
@@ -27,6 +31,11 @@ describe('province', () => {
     expect(asia.shortfall).equal(-26);
     expect(asia.profit).equal(-10);
   });
+  it('empty string demand', () => {
+    asia.demand = '';
+    expect(asia.shortfall).NaN;
+    expect(asia.profit).NaN;
+  });
 });
 
 describe('no producers', () => {
@@ -45,5 +54,18 @@ describe('no producers', () => {
   });
   it('profit', () => {
     expect(noProducers.profit).equal(0);
+  });
+});
+
+describe('string for producers', () => {
+  it('', () => {
+    const data = {
+      name: 'String producers',
+      producers: '',
+      demand: 30,
+      price: 20,
+    };
+    const prov = new Province(data as unknown as ProvinceJSON);
+    expect(prov.shortfall).equal(0);
   });
 });

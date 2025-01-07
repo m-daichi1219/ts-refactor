@@ -1,4 +1,4 @@
-interface ProvinceJSON {
+export interface ProvinceJSON {
   name: string;
   producers: {
     name: string;
