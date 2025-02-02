@@ -58,8 +58,23 @@ class Book {
 }
 
 /** --- */
+// aCustomerを引数に取り、その顧客がニューイングランドに住んでいるかどうかを返しているが、
+// リファクタリング後は、aCustomer.address.stateを引数に取り、その顧客がニューイングランドに住んでいるかどうかを返している
+// 引数が"顧客"から"州(code)"に依存関係を変更している
 const inNewEngland = (aCustomer) => {
   return ['MA', 'CT', 'ME', 'VT', 'NH', 'RI'].includes(aCustomer.address.state);
 };
 
 const newEnglanders = someCustomers.filter((c) => inNewEngland(c));
+
+// const refInNewEngland = (aCustomer) => {
+//   return xxNEWinNewEngland(aCustomer.address.state);
+// };
+
+const xxNEWinNewEngland = (stateCode) => {
+  return ['MA', 'CT', 'ME', 'VT', 'NH', 'RI'].includes(stateCode);
+};
+
+const refNewEnglanders = someCustomers.filter((c) =>
+  xxNEWinNewEngland(c.address.state),
+);
