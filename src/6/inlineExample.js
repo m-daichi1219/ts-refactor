@@ -2,7 +2,7 @@ const printOwing = (invoice) => {
   printBanner();
 
   // calculate outstanding
-  let outstanding = calculateOutstanding(invoice);
+  const outstanding = calculateOutstanding(invoice);
 
   // record due date
   recordDueDate(invoice);
