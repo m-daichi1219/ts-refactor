@@ -35,3 +35,11 @@ class Order {
     return Math.min(this.quantity * this.itemPrice * 0.1, 100);
   }
 }
+
+/** ---- */
+
+const example2 = () => {
+  //   let basePrice = anOrder.basePrice;
+  //   return basePrice > 1000;
+  return anOrder.basePrice > 1000;
+};
