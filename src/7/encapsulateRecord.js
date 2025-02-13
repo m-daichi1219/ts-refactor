@@ -49,3 +49,66 @@ const getOrganization = () => {
 };
 
 result += `<h1>${getOrganization().name}</h1>`;
+
+/** ---- */
+
+customerData[customerID].usage[year][month] = amount;
+
+const compareUsage = (customerID, laterYear, month) => {
+  const later = customerData[customerID].usage[laterYear][month];
+  const earlier = customerData[customerID].usage[laterYear - 1][month];
+  return { laterAmount: later, change: later - earlier };
+};
+
+const getRawDataOfCustomers = () => {
+  return customerData;
+};
+
+const setRawDataOfCustomers = (input) => {
+  customerData = input;
+};
+
+getRawDataOfCustomers()[customerID].usage[year][month] = amount;
+
+const compareUsage2 = (customerID, laterYear, month) => {
+  const later = getRawDataOfCustomers()[customerID].usage[laterYear][month];
+  const earlier =
+    getRawDataOfCustomers()[customerID].usage[laterYear - 1][month];
+  return { laterAmount: later, change: later - earlier };
+};
+
+/** ---- */
+
+class CustomerData {
+  constructor(data) {
+    this._data = data;
+  }
+
+  setUsage(customerID, year, month, amount) {
+    this._data[customerID].usage[year][month] = amount;
+  }
+
+  get rawData() {
+    return _.cloneDeep(this._data);
+  }
+
+  usage(customerID, year, month) {
+    return this._data[customerID].usage[year][month];
+  }
+}
+
+const getCustomerData = () => {
+  return customerData;
+};
+
+const getRawDataOfCustomers2 = () => {
+  return customerData._data;
+};
+
+const setRawDataOfCustomers2 = (input) => {
+  customerData = new CustomerData(input);
+};
+
+const setUsage = (customerID, year, month, amount) => {
+  getRawDataOfCustomers2()[customerID].usage[year][month] = amount;
+};
